@@ -18,7 +18,8 @@ func ConnectDB()  {
 	password := os.Getenv("db_password")
 	dbname := os.Getenv("db_name")
 
-	dsn := "root:password123@tcp(127.0.0.1:3306)/blog-db?charset=utf8mb4&parseTime=True&loc=Local"
+	// dsn := "root:password123@tcp(127.0.0.1:3306)/blog-db?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := user + ":" + password +"@tcp(127.0.0.1:3306)/" + dbname+"?charset=utf8mb4&parseTime=True&loc=Local"
   	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Error),
 	})

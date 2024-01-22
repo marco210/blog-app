@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/marco210/blog-app/database"
 	"github.com/marco210/blog-app/model"
@@ -24,16 +26,22 @@ func BlogList(c *fiber.Ctx) error {
 
 func BlogCreate(c *fiber.Ctx) error {
 	
-
-	db := database.DBConn
-	var records []model.Blog
-	db.Create(&records)
-
 	context := fiber.Map{
 		"msg": "Added a Blog ",
 	}
 
-	c.Status(200)
+	record := new(model.Blog)
+	if err:= c.BodyParser(&record); err !=nil{
+		log.Println("Err in parsing request.")
+	}
+
+	result := database.DBConn.Create(record)
+	if result.Error != nil{
+		log.Println("Err in saving data")
+	}
+	context["data"]= record
+	
+	c.Status(201)
 	return c.JSON(context)
 	
 }
