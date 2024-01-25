@@ -24,6 +24,34 @@ func BlogList(c *fiber.Ctx) error {
 	return c.JSON(context)
 }
 
+
+func BlogListById(c *fiber.Ctx) error {
+	context := fiber.Map{
+		"msg": "BlogList",
+	}
+
+	id := c.Params("id")
+	
+
+	var record model.Blog
+
+	database.DBConn.First(&record,id)
+
+	if record.ID ==0 {
+		log.Println("Record not found")
+		context["msg"] = "Record not found"
+		
+		c.Status(400)
+		return c.JSON(context)
+	}
+
+	context["blog_records"] = record
+
+	c.Status(200)
+	return c.JSON(context)
+}
+
+
 func BlogCreate(c *fiber.Ctx) error {
 	
 	context := fiber.Map{
@@ -48,8 +76,29 @@ func BlogCreate(c *fiber.Ctx) error {
 
 func BlogUpdate(c *fiber.Ctx) error {
 	context := fiber.Map{
-		"msg": "Update a Blog",
 	}
+
+	id := c.Params("id")
+	var record model.Blog
+
+	database.DBConn.First(&record,id)
+	if record.ID ==0{
+		log.Println("Record not found")
+		return c.JSON(context)
+	}
+
+	if err := c.BodyParser(&record); err !=nil{
+		log.Println("Err in parsing request")
+	}
+
+	result := database.DBConn.Save(record)
+	if result.Error !=nil {
+		log.Println("Err in saving data")
+	}
+
+	context["msg"] = "Update record successful"
+	context["data"] = record
+
 	c.Status(200)
 	return c.JSON(context)
 }
@@ -58,6 +107,30 @@ func BlogDelete(c *fiber.Ctx) error {
 	context := fiber.Map{
 		"msg": "Delete a blog",
 	}
+
+	id := c.Params("id")
+	var record model.Blog
+
+	database.DBConn.First(&record,id)
+
+	if record.ID == 0 {
+		log.Println("Record not found")
+		context["msg"] = "Record not found"
+		
+		c.Status(400)
+		return c.JSON(context)
+	}
+
+	result := database.DBConn.Delete(record)
+
+	if result.Error != nil {
+		context["msg"] = "wrong delete in db"
+		
+		c.Status(400)
+		return c.JSON(context)
+	}
+
+	context["msg"] = "Delete record successfull"
 	c.Status(200)
 	return c.JSON(context)
 }
