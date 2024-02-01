@@ -24,6 +24,16 @@
   color: white;
 }
 
+.box{
+  border: solid 1px #000;
+  margin-right: 5px;
+  padding: 10px;
+}
+
+.box .title {
+  font-weight: 800 ;
+}
+
 .App-link {
   color: #61dafb;
 }

@@ -11,6 +11,7 @@ import (
 func BlogList(c *fiber.Ctx) error {
 	context := fiber.Map{
 		"msg": "BlogList",
+		"statusText":"OK",
 	}
 
 	db := database.DBConn
@@ -28,6 +29,7 @@ func BlogList(c *fiber.Ctx) error {
 func BlogListById(c *fiber.Ctx) error {
 	context := fiber.Map{
 		"msg": "BlogList",
+		"statusText":"OK",
 	}
 
 	id := c.Params("id")
@@ -56,6 +58,7 @@ func BlogCreate(c *fiber.Ctx) error {
 	
 	context := fiber.Map{
 		"msg": "Added a Blog ",
+		"statusText":"OK",
 	}
 
 	record := new(model.Blog)
@@ -97,6 +100,7 @@ func BlogUpdate(c *fiber.Ctx) error {
 	}
 
 	context["msg"] = "Update record successful"
+	context["statusText"] ="OK"
 	context["data"] = record
 
 	c.Status(200)
@@ -106,6 +110,7 @@ func BlogUpdate(c *fiber.Ctx) error {
 func BlogDelete(c *fiber.Ctx) error {
 	context := fiber.Map{
 		"msg": "Delete a blog",
+		"statusText":"OK",
 	}
 
 	id := c.Params("id")
