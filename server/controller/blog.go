@@ -10,8 +10,8 @@ import (
 
 func BlogList(c *fiber.Ctx) error {
 	context := fiber.Map{
-		"msg": "BlogList",
-		"statusText":"OK",
+		"msg":        "BlogList",
+		"statusText": "OK",
 	}
 
 	db := database.DBConn
@@ -25,82 +25,81 @@ func BlogList(c *fiber.Ctx) error {
 	return c.JSON(context)
 }
 
-
+// Blog detail Page
 func BlogListById(c *fiber.Ctx) error {
 	context := fiber.Map{
-		"msg": "BlogList",
-		"statusText":"OK",
+		"msg":        "",
+		"statusText": "",
 	}
 
 	id := c.Params("id")
-	
 
 	var record model.Blog
 
-	database.DBConn.First(&record,id)
+	database.DBConn.First(&record, id)
 
-	if record.ID ==0 {
+	if record.ID == 0 {
 		log.Println("Record not found")
 		context["msg"] = "Record not found"
-		
-		c.Status(400)
+
+		c.Status(404)
 		return c.JSON(context)
 	}
 
+	context["statusText"] = "OK"
+	context["msg"] = "Blog Detail"
 	context["blog_records"] = record
 
 	c.Status(200)
 	return c.JSON(context)
 }
 
-
 func BlogCreate(c *fiber.Ctx) error {
-	
+
 	context := fiber.Map{
-		"msg": "Added a Blog ",
-		"statusText":"OK",
+		"msg":        "Added a Blog ",
+		"statusText": "OK",
 	}
 
 	record := new(model.Blog)
-	if err:= c.BodyParser(&record); err !=nil{
+	if err := c.BodyParser(&record); err != nil {
 		log.Println("Err in parsing request.")
 	}
 
 	result := database.DBConn.Create(record)
-	if result.Error != nil{
+	if result.Error != nil {
 		log.Println("Err in saving data")
 	}
-	context["data"]= record
-	
+	context["data"] = record
+
 	c.Status(201)
 	return c.JSON(context)
-	
+
 }
 
 func BlogUpdate(c *fiber.Ctx) error {
-	context := fiber.Map{
-	}
+	context := fiber.Map{}
 
 	id := c.Params("id")
 	var record model.Blog
 
-	database.DBConn.First(&record,id)
-	if record.ID ==0{
+	database.DBConn.First(&record, id)
+	if record.ID == 0 {
 		log.Println("Record not found")
 		return c.JSON(context)
 	}
 
-	if err := c.BodyParser(&record); err !=nil{
+	if err := c.BodyParser(&record); err != nil {
 		log.Println("Err in parsing request")
 	}
 
 	result := database.DBConn.Save(record)
-	if result.Error !=nil {
+	if result.Error != nil {
 		log.Println("Err in saving data")
 	}
 
 	context["msg"] = "Update record successful"
-	context["statusText"] ="OK"
+	context["statusText"] = "OK"
 	context["data"] = record
 
 	c.Status(200)
@@ -109,19 +108,19 @@ func BlogUpdate(c *fiber.Ctx) error {
 
 func BlogDelete(c *fiber.Ctx) error {
 	context := fiber.Map{
-		"msg": "Delete a blog",
-		"statusText":"OK",
+		"msg":        "Delete a blog",
+		"statusText": "OK",
 	}
 
 	id := c.Params("id")
 	var record model.Blog
 
-	database.DBConn.First(&record,id)
+	database.DBConn.First(&record, id)
 
 	if record.ID == 0 {
 		log.Println("Record not found")
 		context["msg"] = "Record not found"
-		
+
 		c.Status(400)
 		return c.JSON(context)
 	}
@@ -130,7 +129,7 @@ func BlogDelete(c *fiber.Ctx) error {
 
 	if result.Error != nil {
 		context["msg"] = "wrong delete in db"
-		
+
 		c.Status(400)
 		return c.JSON(context)
 	}
